@@ -1,8 +1,8 @@
 #include "imgui_sdl.h"
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 #include <map>
 #include <list>
@@ -548,6 +548,38 @@ namespace ImGuiSDL
 		delete texture;
 
 		delete CurrentDevice;
+	}
+
+	void ProcessEvent(const SDL_Event* event) {
+		ImGuiIO& io = ImGui::GetIO();
+		io.DeltaTime = 1.0f / 60.0f;
+		switch(event->type) {
+
+			case SDL_WINDOWEVENT:
+				if(event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+					io.DisplaySize = ImVec2(event->window.data1, event->window.data2);
+				}
+				break;
+
+			case SDL_MOUSEWHEEL:
+				io.MouseWheel = static_cast<float>(event->wheel.y);	
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+				io.MouseDown[(event->button.button == SDL_BUTTON_LEFT) ? 0 : 1] = true;
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				io.MouseDown[(event->button.button == SDL_BUTTON_LEFT) ? 0 : 1] = false;
+				break;
+
+			case SDL_MOUSEMOTION:
+				io.MousePos = ImVec2(event->motion.x, event->motion.y);
+				break;
+			
+			default: return;
+		}
+
 	}
 
 	void Render(ImDrawData* drawData)
