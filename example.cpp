@@ -25,10 +25,6 @@ int main()
 	bool run = true;
 	while (run)
 	{
-		ImGuiIO& io = ImGui::GetIO();
-
-		int wheel = 0;
-
 		SDL_Event e;
 		while (SDL_PollEvent(&e))
 		{
